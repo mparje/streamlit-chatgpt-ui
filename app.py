@@ -1,5 +1,7 @@
 import openai
 import streamlit as st
+import docx
+import os
 from streamlit_chat import message
 
 # Setting page title and header
@@ -59,9 +61,35 @@ if clear_button:
     st.session_state['total_tokens'] = []
     counter_placeholder.write(f"Total cost of this conversation: ${st.session_state['total_cost']:.5f}")
 
+# Upload a DOCX file
+uploaded_file = left_column.file_uploader("Cargar archivo DOCX con citas (máx. 2000 palabras)", type=["docx"])
+
+# Read and extract citations and references from the uploaded file
+def extract_citations(docx_file):
+    doc = docx.Document(docx_file)
+    citations = []
+    references = []
+    for paragraph in doc.paragraphs:
+        text = paragraph.text
+        if text.startswith("Cita:"):
+            citations.append(text[6:])
+        elif text.startswith("Referencia:"):
+            references.append(text[12:])
+    return citations, references
+
+if uploaded_file is     not None:
+    with open("temp.docx", "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    citations, references = extract_citations("temp.docx")
+    os.remove("temp.docx")
+else:
+    citations = []
 
 # generate a response
 def generate_response(prompt):
+    if citations:
+        st.session_state['messages'].insert(1, {"role": "system", "content": f"Utiliza las siguientes citas relevantes en tu respuesta: {', '.join(citations)}"})
+    
     st.session_state['messages'].append({"role": "user", "content": prompt})
 
     completion = openai.ChatCompletion.create(
@@ -70,13 +98,14 @@ def generate_response(prompt):
     )
     response = completion.choices[0].message.content
     st.session_state['messages'].append({"role": "assistant", "content": response})
+    
+    if citations:
+        st.session_state['messages'].pop(1)
 
-    # print(st.session_state['messages'])
     total_tokens = completion.usage.total_tokens
     prompt_tokens = completion.usage.prompt_tokens
     completion_tokens = completion.usage.completion_tokens
     return response, total_tokens, prompt_tokens, completion_tokens
-
 
 # container for chat history
 response_container = st.container()
@@ -95,7 +124,6 @@ with container:
         st.session_state['model_name'].append(model_name)
         st.session_state['total_tokens'].append(total_tokens)
 
-        # from https://openai.com/pricing#language-models
         if model_name == "GPT-3.5":
             cost = total_tokens * 0.002 / 1000
         else:
