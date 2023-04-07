@@ -46,13 +46,7 @@ if clear_button:
 
 # Upload a DOCX file
 uploaded_file = left_column.file_uploader("
-        - Upload a document with quotes from various articles on the topic you are researching, including the reference in APA format (max. 2000 words).         
-        Please note the ethical considerations when using this tool:
-        - The generated text is meant to be a suggestion and should not replace your own creative work.
-        - Verify the accuracy of the generated content, including citations, before using it in your research or academic work.
-        Additional information:
-        1. We use the GPT-4 model for content generation. Consequently, your key must be authorized to use this model.
-        2. Uploaded files do not remain on the server; they are automatically deleted after 10 minutes of inactivity.", type=["docx"])
+        - Upload a document with quotes from various articles on the topic you are researching, including the reference in APA format (max. 2000 words). , type=["docx"])
 
 # Read and extract citations and references from the uploaded file
 def extract_citations(docx_file):
