@@ -115,10 +115,10 @@ if st.session_state['generated']:
                 f"Model used: {st.session_state['model_name'][i]}; Number of tokens: {st.session_state['total_tokens'][i]}")
 
     # Download the essay in Markdown format
-    # Download the essay in Markdown format
     if st.button("Download essay as Markdown file"):
-        markdown_text = f"{output}{os.linesep}{os.linesep}{''.join([f'- {cite}' + os.linesep for cite in citations])}"
+        markdown_text = "{}{}{}".format(output, os.linesep * 2, "".join(["- {}{}".format(cite, os.linesep) for cite in citations]))
         with open("essay.md", "w") as f:
             f.write(markdown_text)
         st.download_button("Download essay.md", "essay.md", "text/markdown")
         os.remove("essay.md")
+
