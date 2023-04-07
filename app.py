@@ -5,8 +5,8 @@ import os
 from streamlit_chat import message
 
 # Setting page title and header
-st.set_page_config(page_title="AVA", page_icon=":robot_face:")
-st.markdown("<h1 style='text-align: center;'>Writer. You do the research, I write the paper</h1>", unsafe_allow_html=True)
+st.set_page_config(page_title="EWP", page_icon=":robot_face:")
+st.markdown("<h1 style='text-align: center;'>You do the research, I write the paper</h1>", unsafe_allow_html=True)
 
 # Create a left column in the Streamlit interface
 left_column = st.sidebar
@@ -23,7 +23,7 @@ if 'past' not in st.session_state:
     st.session_state['past'] = []
 if 'messages' not in st.session_state:
     st.session_state['messages'] = [
-        {"role": "system", "content": "You are a helpful assistant."}
+        {"role": "system", "content": "You are skilled writer. With the quotations provided, you write an academic paper that responds to the user's input title. The essay mus have between 2000 and 2500 words, and must be highly original, in the language of the user. I must include at least ten quotations, from the document provided."}
     ]
 if 'model_name' not in st.session_state:
     st.session_state['model_name'] = []
@@ -39,7 +39,7 @@ if clear_button:
     st.session_state['generated'] = []
     st.session_state['past'] = []
     st.session_state['messages'] = [
-        {"role": "system", "content": "You are skilled writer. With the quotations provided, you write an academic paper that responds to the user's input title. The essay mus have between 2000 and 2500 words, and must be highly original, in the language of the user. I mut include at least ten quotations, from the document provided."}
+        {"role": "system", "content": "You are skilled writer. With the quotations provided, you write an academic paper that responds to the user's input title. The essay mus have between 2000 and 2500 words, and must be highly original, in the language of the user. I must include at least ten quotations, from the document provided."}
     ]
     st.session_state['model_name'] = []
     st.session_state['total_tokens'] = []
