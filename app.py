@@ -49,10 +49,10 @@ uploaded_file = left_column.file_uploader("Upload a document with quotes from va
 
 # Add instructions below file uploader
 instructions = """
-###Please note the ethical considerations when using this tool:
+Please note the ethical considerations when using this tool:
 - The generated text is meant to be a suggestion and should not replace your own creative work.
 - Verify the accuracy of the generated content, including citations, before using it in your research or academic work.
-###Additional information:
+Additional information:
 - We use the GPT-4 model for content generation. Consequently, your key must be authorized to use this model.
 - Uploaded files do not remain on the server. They are deleted after 10 minutes of inactivity.
 """
