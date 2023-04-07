@@ -6,13 +6,13 @@ from streamlit_chat import message
 
 # Setting page title and header
 st.set_page_config(page_title="AVA", page_icon=":robot_face:")
-st.markdown("<h1 style='text-align: center;'>AVA - a totally harmless chatbot 😬</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>Writer. You do the research, I write the paper</h1>", unsafe_allow_html=True)
 
 # Create a left column in the Streamlit interface
 left_column = st.sidebar
 
 # Add a title and an input box for the OpenAI API key in the left column
-left_column.title("Argument Quality Evaluator")
+left_column.title("Essay Writer")
 api_key = left_column.text_input("Enter your OpenAI API key:", type="password")
 openai.api_key = api_key
 
@@ -52,7 +52,7 @@ if clear_button:
     st.session_state['generated'] = []
     st.session_state['past'] = []
     st.session_state['messages'] = [
-        {"role": "system", "content": "You are a helpful assistant."}
+        {"role": "system", "content": "You are skilled writer. With the quotations provided, you write an academic paper that responds to the user's input title. The essay mus have between 2000 and 2500 words, and must be highly original, in the language of the user. I mut include at least ten quotations, from the document provided."}
     ]
     st.session_state['number_tokens'] = []
     st.session_state['model_name'] = []
@@ -77,7 +77,7 @@ def extract_citations(docx_file):
             references.append(text[12:])
     return citations, references
 
-if uploaded_file is     not None:
+if uploaded_file is not None:
     with open("temp.docx", "wb") as f:
         f.write(uploaded_file.getbuffer())
     citations, references = extract_citations("temp.docx")
