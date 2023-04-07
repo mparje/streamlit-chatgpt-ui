@@ -92,17 +92,28 @@ with container:
         user_input = st.text_area("You:", key='input', height=100)
         submit_button = st.form_submit_button(label='Send')
 
+    import os
+
     if submit_button and user_input:
         output, total_tokens, prompt_tokens, completion_tokens = generate_response(user_input)
         st.session_state['past'].append(user_input)
         st.session_state['generated'].append(output)
 
         if citations:
-            markdown_text = f"{output}\n\n{''.join([f'- {cite}\n' for cite in citations])}"
+            newline = os.linesep
+            markdown_text = f"{output}{newline}{newline}{''.join([f'- {cite}{newline}' for cite in citations])}"
             markdown_bytes = StringIO(markdown_text).read().encode("utf-8")
             b64 = base64.b64encode(markdown_bytes).decode()
             href = f"<a href=\"data:file/markdown;base64,{b64}\" download=\"generated_essay.md\">Download generated essay in Markdown format</a>"
             st.markdown(href, unsafe_allow_html=True)
+
+    st.session_state['total_tokens'].append(total_tokens)
+
+if st.session_state['generated']:
+    with response_container:
+        for i in range(len(st.session_state['generated'])):
+            message(st.session_state["past"][i], is_user=True, key=str(i) + '_user')
+            message(st.session_state["generated"][i], key=str(i))
 
         st.session_state['total_tokens'].append(total_tokens)
 
