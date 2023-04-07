@@ -116,9 +116,8 @@ if st.session_state['generated']:
 
     # Download the essay in Markdown format
     if st.button("Download essay as Markdown file"):
-        markdown_text = "{}{}{}".format(output, os.linesep * 2, "".join(["- {}{}".format(cite, os.linesep) for cite in citations]))
+        markdown_text = output + (os.linesep * 2) + "".join(["- " + cite + os.linesep for cite in citations])
         with open("essay.md", "w") as f:
             f.write(markdown_text)
         st.download_button("Download essay.md", "essay.md", "text/markdown")
         os.remove("essay.md")
-
