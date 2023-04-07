@@ -98,7 +98,7 @@ if st.session_state['generated']:
 
 # Download the essay as a Markdown file
 if st.button("Download Essay as Markdown"):
-    markdown_text = f"{output}\n\n{''.join([f'- {cite}\n' for cite in citations])}"
+    markdown_text = f"{output}\n\n{''.join([f'- {cite}' + '\n' for cite in citations])}"
     markdown_file = StringIO()
     markdown_file.write(markdown_text)
     markdown_file.seek(0)
