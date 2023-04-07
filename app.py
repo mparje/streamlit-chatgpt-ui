@@ -89,8 +89,7 @@ def generate_response(prompt, citations):
 
     completion = openai.ChatCompletion.create(
         model="gpt-4",
-        messages=st.session_state['messages'],
-        user_files=[openai.UserFile.create(file=openai.File.create(filename="citations.txt", data=openai.File.encode_string_data(", ".join(citations), "text/plain")))]
+        messages=st.session_state['messages']
     )
     response = completion.choices[0].message.content
     st.session_state['messages'].append({"role": "assistant", "content": response})
