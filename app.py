@@ -27,17 +27,11 @@ if 'messages' not in st.session_state:
     st.session_state['messages'] = [
         {"role": "system", "content": "You are a helpful assistant."}
     ]
-if 'model_name' not in st.session_state:
-    st.session_state['model_name'] = []
-if 'cost' not in st.session_state:
-    st.session_state['cost'] = []
 if 'total_tokens' not in st.session_state:
     st.session_state['total_tokens'] = []
-if 'total_cost' not in st.session_state:
-    st.session_state['total_cost'] = 0.0
 
 # Upload a DOCX file
-uploaded_file = left_column.file_uploader("Upload a DOCX file with quotes from various articles on the topic you are researching, including the reference in APA format (max. 2000 words):", type=["docx"])
+uploaded_file = left_column.file_uploader("Upload a DOCX file with quotes from various articles about the topic you are researching, including the reference in APA format.", type=["docx"])
 
 # Read and extract citations and references from the uploaded file
 def extract_citations(docx_file):
@@ -64,7 +58,7 @@ else:
 def generate_response(prompt):
     if citations:
         st.session_state['messages'].insert(1, {"role": "system", "content": f"Utiliza las siguientes citas relevantes en tu respuesta: {', '.join(citations)}"})
-    
+
     st.session_state['messages'].append({"role": "user", "content": prompt})
 
     completion = openai.ChatCompletion.create(
@@ -73,14 +67,12 @@ def generate_response(prompt):
     )
     response = completion.choices[0].message.content
     st.session_state['messages'].append({"role": "assistant", "content": response})
-    
+
     if citations:
         st.session_state['messages'].pop(1)
 
     total_tokens = completion.usage.total_tokens
-    prompt_tokens = completion.usage.prompt_tokens
-    completion_tokens = completion.usage.completion_tokens
-    return response, total_tokens, prompt_tokens, completion_tokens
+    return response, total_tokens
 
 # container for chat history
 response_container = st.container()
@@ -92,29 +84,10 @@ with container:
         user_input = st.text_area("You:", key='input', height=100)
         submit_button = st.form_submit_button(label='Send')
 
-    import os
-
     if submit_button and user_input:
-        output, total_tokens, prompt_tokens, completion_tokens = generate_response(user_input)
+        output, total_tokens = generate_response(user_input)
         st.session_state['past'].append(user_input)
         st.session_state['generated'].append(output)
-
-        if citations:
-            newline = os.linesep
-            markdown_text = f"{output}{newline}{newline}{''.join([f'- {cite}{newline}' for cite in citations])}"
-            markdown_bytes = StringIO(markdown_text).read().encode("utf-8")
-            b64 = base64.b64encode(markdown_bytes).decode()
-            href = f"<a href=\"data:file/markdown;base64,{b64}\" download=\"generated_essay.md\">Download generated essay in Markdown format</a>"
-            st.markdown(href, unsafe_allow_html=True)
-
-    st.session_state['total_tokens'].append(total_tokens)
-
-if st.session_state['generated']:
-    with response_container:
-        for i in range(len(st.session_state['generated'])):
-            message(st.session_state["past"][i], is_user=True, key=str(i) + '_user')
-            message(st.session_state["generated"][i], key=str(i))
-
         st.session_state['total_tokens'].append(total_tokens)
 
 if st.session_state['generated']:
@@ -122,3 +95,13 @@ if st.session_state['generated']:
         for i in range(len(st.session_state['generated'])):
             message(st.session_state["past"][i], is_user=True, key=str(i) + '_user')
             message(st.session_state["generated"][i], key=str(i))
+
+# Download the essay as a Markdown file
+if st.button("Download Essay as Markdown"):
+    markdown_text = f"{output}\n\n{''.join([f'- {cite}\n' for cite in citations])}"
+    markdown_file = StringIO()
+    markdown_file.write(markdown_text)
+    markdown_file.seek(0)
+    b64 = base64.b64encode(markdown_file.getvalue().encode()).decode()  # some strings <-> bytes conversions necessary here
+    href = f'<a href="data:file/markdown;base64,{b64}" download="essay.md">Download Essay as Markdown</a>'
+    st.markdown(href, unsafe_allow_html=True)
