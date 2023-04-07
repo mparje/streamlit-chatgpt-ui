@@ -59,7 +59,6 @@ Additional information:
 
 left_column.markdown(instructions)
 
-
 # Read and extract citations and references from the uploaded file
 def extract_citations(docx_file):
     doc = docx.Document(docx_file)
@@ -82,7 +81,7 @@ else:
     citations = []
 
 # generate a response
-def generate_response(prompt):
+def generate_response(prompt, citations):
     if citations:
         st.session_state['messages'].insert(1, {"role": "system", "content": f"Utiliza las siguientes citas relevantes en tu respuesta: {', '.join(citations)}"})
     
@@ -113,7 +112,7 @@ with container:
 
     if submit_button and user_input:
         with st.spinner("Generating answer..."):
-            output, total_tokens = generate_response(user_input)
+            output, total_tokens = generate_response(user_input, citations)
         st.session_state['past'].append(user_input)
         st.session_state['generated'].append(output)
         st.session_state['model_name'].append("GPT-4")
