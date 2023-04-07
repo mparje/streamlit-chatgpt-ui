@@ -45,7 +45,7 @@ if clear_button:
     st.session_state['total_tokens'] = []
 
 # Upload a DOCX file
-uploaded_file = left_column.file_uploader("Upload a document with quotes from various articles on the topic you are researching, including the reference in APA format (max. 2000 words). , type=["docx"])
+uploaded_file = left_column.file_uploader("Upload a document with quotes from various articles on the topic you are researching, including the reference in APA format (max. 2000 words)." , type=["docx"])
 
 # Read and extract citations and references from the uploaded file
 def extract_citations(docx_file):
