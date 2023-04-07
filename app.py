@@ -79,7 +79,7 @@ def generate_response(prompt):
         model="gpt-4",
         messages=st.session_state['messages']
     )
-    response =     completion.choices[0].message.content
+    response = completion.choices[0].message.content
     st.session_state['messages'].append({"role": "assistant", "content": response})
     
     if citations:
@@ -95,7 +95,7 @@ container = st.container()
 
 with container:
     with st.form(key='my_form', clear_on_submit=True):
-        user_input = st.text_area("Title of your paper or article:", key='input', height=40)
+        user_input = st.text_input("Title of your paper or article:", key='input')
         submit_button = st.form_submit_button(label='Send')
 
     if submit_button and user_input:
@@ -122,4 +122,3 @@ if st.session_state['generated']:
             f.write(markdown_text)
         st.download_button("Download essay.md", "essay.md", "text/markdown")
         os.remove("essay.md")
-
